@@ -39,17 +39,19 @@ ListView {
     orientation: ListView.Horizontal
     snapMode: ListView.SnapToItem
 
+    preferredHighlightBegin: width /2 - currentItem.width /2
+    preferredHighlightEnd: width /2 + currentItem.width /2
+    highlightRangeMode: ListView.StrictlyEnforceRange
+    contentY: -(width / 2 - (width / 4))
+
     property bool fakePressed:     false
     property bool toTopAllowed:    false
     property bool toBottomAllowed: false
-    property bool toLeftAllowed:   true
-    property bool toRightAllowed:  false
+    property bool toLeftAllowed:   !atXEnd
+    property bool toRightAllowed:  !atXBeginning
     property int currentPos: 0
 
     onCurrentPosChanged: {
-        toLeftAllowed = (currentPos!=launcherModel.itemCount-1)
-        toRightAllowed  = (currentPos!=0)
-
         rightIndicator.animate()
         leftIndicator.animate()
         topIndicator.animate()
@@ -60,8 +62,8 @@ ListView {
 
     delegate: LauncherItemDelegate {
         id: launcherItem
-        width: appsListView.width
-        height: appsListView.width
+        width: appsListView.width / 2
+        height: appsListView.width / 2
         iconName: model.object.iconId == "" ? "ios-help" : model.object.iconId
         iconCaption: model.object.title.toUpperCase() + localeManager.changesObserver
         enabled: !appsListView.dragging
